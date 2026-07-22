@@ -20,6 +20,7 @@ def create_app():
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['BABEL_DEFAULT_LOCALE'] = 'de'
     app.config['BABEL_SUPPORTED_LOCALES'] = ['de', 'en', 'fr', 'es']
+    app.config['RE_FUCTIONS_URL'] = os.environ.get('RE_FUCTIONS_URL', 'http://localhost:5001')
     db.init_app(app)
     migrate.init_app(app, db)
 

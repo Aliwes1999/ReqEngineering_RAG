@@ -2,7 +2,7 @@ import csv
 import io
 import re
 from pypdf.errors import PdfReadError
-from flask import Blueprint, render_template, request, jsonify, redirect, url_for, abort
+from flask import Blueprint, render_template, request, jsonify, redirect, url_for, abort, current_app
 from flask_login import login_required, current_user
 from . import db
 from .models import Project, Requirement, RequirementVersion, version_label
@@ -73,7 +73,46 @@ def agent_page(project_id):
     """
     project = Project.query.get_or_404(project_id)
     check_project_access(project)
-    return render_template('agent.html', project=project)
+    return render_template(
+        'agent.html', 
+        project=project,
+        reefuctions_url=current_app.config.get('RE_FUCTIONS_URL', 'http://localhost:5001')
+    )
+
+
+@agent_bp.route('/agent/requirements/<int:project_id>/export', methods=['GET'])
+@login_required
+def export_requirements(project_id):
+    project = Project.query.get_or_404(project_id)
+    check_project_access(project)
+
+    requirements = Requirement.query.filter_by(project_id=project_id, is_deleted=False).all()
+    export_data = []
+
+    for req in requirements:
+        latest = req.get_latest_version()
+        if not latest:
+            continue
+
+        requirement_item = {
+            'id': req.id,
+            'title': latest.title or '',
+            'description': latest.description or '',
+            'category': latest.category or '',
+            'status': latest.status or '',
+        }
+
+        if hasattr(latest, 'get_custom_data'):
+            custom_data = latest.get_custom_data() or {}
+            if custom_data:
+                requirement_item['custom'] = custom_data
+
+        export_data.append(requirement_item)
+
+    response = jsonify(export_data)
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Methods'] = 'GET'
+    return response
 
 
 @agent_bp.route('/agent/generate/<int:project_id>', methods=['POST'])
