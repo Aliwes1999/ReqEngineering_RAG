@@ -3,6 +3,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from . import db
 
+import json
+
 def version_label(n: int) -> str:
     """Generates a letter-based version label (1 -> A, 2 -> B, ...)."""
     if n <= 0:
@@ -371,3 +373,21 @@ class Notification(db.Model):
         from datetime import datetime
         self.is_read = True
         self.read_at = datetime.utcnow()
+
+class FunctionTree(db.Model):
+    """Speichert die Funktionsstruktur pro Projekt."""
+    id = db.Column(db.Integer, primary_key=True)
+    project_id = db.Column(db.Integer, db.ForeignKey('project.id'), nullable=False)
+    tree_data = db.Column(db.Text, nullable=False, default='{}')  # JSON representation of the function tree
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    project = db.relationship('Project', backref=db.backref('function_tree_entry', uselist=False))
+
+    def get_tree_data(self):
+        try:
+            return json.loads(self.tree_data) if self.tree_data else {}
+        except:
+            return {}
+
+    def set_tree_data(self, data):
+        self.tree_data = json.dumps(data, ensure_ascii=False)
