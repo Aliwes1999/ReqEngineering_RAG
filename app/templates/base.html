@@ -1,12 +1,11 @@
-{% set current_lang_code = current_locale[:2] if current_locale else 'de' %} {%
-set current_lang = (language_options | selectattr('code', 'equalto',
-current_lang_code) | list | first) %}
+{% set current_lang_code = current_locale[:2] if current_locale else 'de' %}
+{% set current_lang = (language_options | selectattr('code', 'equalto', current_lang_code) | list | first) %}
 <!doctype html>
 <html lang="{{ current_lang_code }}">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{% block title %}Requirements Tool{% endblock %}</title>
+    <title>{% block title %}{{ _('Requirements Tool') }}{% endblock %}</title>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -64,7 +63,7 @@ current_lang_code) | list | first) %}
             >
               <i class="bi bi-clipboard-check fs-5"></i>
             </div>
-            <span class="fw-bold text-dark">Requirements Tool</span>
+            <span class="fw-bold text-dark">{{ self.title() }}</span>
             <i class="bi bi-chevron-down ms-2" style="font-size: 0.85rem"></i>
           </button>
           <ul
@@ -74,25 +73,53 @@ current_lang_code) | list | first) %}
           >
             <li>
               <a
-                class="dropdown-item d-flex align-items-center {% if request.path == '/' or 'main' in request.endpoint %}active bg-primary bg-opacity-10 text-primary{% endif %}"
+                class="dropdown-item d-flex align-items-center {% if request.endpoint == 'main.home' %}active bg-primary bg-opacity-10 text-primary{% endif %}"
                 href="{{ url_for('main.home') if current_user.is_authenticated else url_for('auth.login') }}"
               >
                 <i class="bi bi-clipboard-check me-2"></i>
-                <span>{{ _('Requirements Tool') }}</span>
+                <span>{{ _('Startseite') }}</span>
+              </a>
+            </li>
+            {% if current_user.is_authenticated %}
+              {% set current_project_id = session.get('last_project_id') %}
+              {% set show_project_tabs = current_project_id and (
+                request.endpoint == 'main.manage_project' or
+                request.endpoint.startswith('features.') or
+                request.endpoint.startswith('solution_structure.') or
+                request.endpoint.startswith('agent.')
+              ) %}
+              {% if show_project_tabs %}
+            <li>
+              <a
+                class="dropdown-item d-flex align-items-center {% if request.endpoint == 'main.manage_project' %}active bg-primary bg-opacity-10 text-primary{% endif %}"
+                href="{{ url_for('main.manage_project', project_id=current_project_id) }}"
+              >
+                <i class="bi bi-list-task me-2"></i>
+                <span>{{ _('Requirements') }}</span>
               </a>
             </li>
             <li>
               <a
                 class="dropdown-item d-flex align-items-center {% if 'features' in request.endpoint %}active bg-primary bg-opacity-10 text-primary{% endif %}"
-                href="{{ url_for('features.dashboard') }}"
+                href="{{ url_for('features.dashboard', project_id=current_project_id) }}"
               >
                 <i class="bi bi-grid-3x3-gap me-2"></i>
                 <span>{{ _('Funktionen') }}</span>
               </a>
             </li>
+            <li>
+              <a
+                class="dropdown-item d-flex align-items-center {% if 'solution_structure' in request.endpoint %}active bg-primary bg-opacity-10 text-primary{% endif %}"
+                href="{{ url_for('solution_structure.dashboard', project_id=current_project_id) }}"
+              >
+                <i class="bi bi-box-seam me-2"></i>
+                <span>{{ _('Lösungsstruktur') }}</span>
+              </a>
+            </li>
+              {% endif %}
+            {% endif %}
           </ul>
         </div>
-
         <!-- Right Side: Notifications + User Avatar/Dropdown -->
         <div class="d-flex align-items-center gap-3 ms-auto">
           {% if current_user.is_authenticated %}

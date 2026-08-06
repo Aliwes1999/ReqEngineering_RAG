@@ -1,9 +1,8 @@
-import csv
-import io
-import re
-from pypdf.errors import PdfReadError
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for, abort, current_app
 from flask_login import login_required, current_user
+import re
+import csv
+import io
 from . import db
 from .models import Project, Requirement, RequirementVersion, version_label
 from .services.ai_client import generate_requirements

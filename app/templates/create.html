@@ -1,6 +1,6 @@
-{% extends "base.html" %} {% block title %}{{ _('Projekt verwalten') }}{% endblock %} {% block
-
-content %} 
+{% extends "base.html" %}
+{% block title %}{% if project %}{{ _('Requirements') }}{% else %}{{ _('Neues Projekt erstellen') }}{% endif %}{% endblock %}
+{% block content %}
 <style>
   main.container {
     max-width: 1400px;
