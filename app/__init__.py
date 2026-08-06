@@ -20,7 +20,6 @@ def create_app():
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['BABEL_DEFAULT_LOCALE'] = 'de'
     app.config['BABEL_SUPPORTED_LOCALES'] = ['de', 'en', 'fr', 'es']
-    app.config['RE_FUCTIONS_URL'] = os.environ.get('RE_FUCTIONS_URL', 'http://localhost:5001')
     db.init_app(app)
     migrate.init_app(app, db)
 
@@ -43,10 +42,12 @@ def create_app():
     from .auth import auth_bp
     from .agent import agent_bp
     from .features.features import features_bp
+    from .features.solution_structure.solution_structure import solution_structure_bp
     app.register_blueprint(bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(agent_bp)
     app.register_blueprint(features_bp)
+    app.register_blueprint(solution_structure_bp)
 
     from .migration import migration_bp
     app.register_blueprint(migration_bp)

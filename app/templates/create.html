@@ -99,6 +99,36 @@ content %}
     </div>
 </div>
 
+<!-- Project Navigation Tabs -->
+<div class="mt-4 mb-4">
+  <ul class="nav nav-tabs align-items-center">
+    <li class="nav-item">
+      <a class="nav-link {% if request.endpoint == 'main.home' %}active{% endif %}"
+         href="{{ url_for('main.home') }}">
+        <i class="bi bi-house-door me-1"></i> {{ _('Startseite') }}
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link {% if request.endpoint == 'main.manage_project' %}active{% endif %}"
+         href="{{ url_for('main.manage_project', project_id=project.id) }}">
+        <i class="bi bi-list-check me-1"></i> {{ _('Requirements') }}
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link {% if request.endpoint == 'features.dashboard' %}active{% endif %}"
+         href="{{ url_for('features.dashboard', project_id=project.id) }}">
+        <i class="bi bi-grid-3x3-gap me-1"></i> {{ _('Funktionen') }}
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link {% if request.endpoint == 'solution_structure.dashboard' %}active{% endif %}"
+         href="{{ url_for('solution_structure.dashboard', project_id=project.id) }}">
+        <i class="bi bi-diagram-3 me-1"></i> {{ _('Lösungsstruktur') }}
+      </a>
+    </li>
+  </ul>
+</div>
+
 <!-- Conflict Modal (Preserved) -->
 <div class="modal fade" id="conflictModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg">

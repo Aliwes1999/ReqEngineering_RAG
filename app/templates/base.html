@@ -74,22 +74,42 @@ current_lang_code) | list | first) %}
           >
             <li>
               <a
-                class="dropdown-item d-flex align-items-center {% if request.path == '/' or 'main' in request.endpoint %}active bg-primary bg-opacity-10 text-primary{% endif %}"
+                class="dropdown-item d-flex align-items-center {% if request.endpoint == 'main.home' %}active bg-primary bg-opacity-10 text-primary{% endif %}"
                 href="{{ url_for('main.home') if current_user.is_authenticated else url_for('auth.login') }}"
               >
-                <i class="bi bi-clipboard-check me-2"></i>
-                <span>{{ _('Requirements Tool') }}</span>
+                <i class="bi bi-house-door me-2"></i>
+                <span>{{ _('Startseite') }}</span>
+              </a>
+            </li>
+            {% if session.get('last_project_id') %}
+            <li>
+              <a
+                class="dropdown-item d-flex align-items-center {% if request.endpoint == 'main.manage_project' %}active bg-primary bg-opacity-10 text-primary{% endif %}"
+                href="{{ url_for('main.manage_project', project_id=session.get('last_project_id')) }}"
+              >
+                <i class="bi bi-list-check me-2"></i>
+                <span>{{ _('Requirements') }}</span>
               </a>
             </li>
             <li>
               <a
                 class="dropdown-item d-flex align-items-center {% if 'features' in request.endpoint %}active bg-primary bg-opacity-10 text-primary{% endif %}"
-                href="{{ url_for('features.dashboard') }}"
+                href="{{ url_for('features.dashboard', project_id=session.get('last_project_id')) }}"
               >
                 <i class="bi bi-grid-3x3-gap me-2"></i>
                 <span>{{ _('Funktionen') }}</span>
               </a>
             </li>
+            <li>
+              <a
+                class="dropdown-item d-flex align-items-center {% if 'solution_structure' in request.endpoint %}active bg-primary bg-opacity-10 text-primary{% endif %}"
+                href="{{ url_for('solution_structure.dashboard', project_id=session.get('last_project_id')) }}"
+              >
+                <i class="bi bi-diagram-3 me-2"></i>
+                <span>{{ _('Lösungsstruktur') }}</span>
+              </a>
+            </li>
+            {% endif %}
           </ul>
         </div>
 
