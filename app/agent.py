@@ -74,8 +74,7 @@ def agent_page(project_id):
     check_project_access(project)
     return render_template(
         'agent.html', 
-        project=project,
-        reefuctions_url=current_app.config.get('RE_FUCTIONS_URL', 'http://localhost:5001')
+        project=project
     )
 
 

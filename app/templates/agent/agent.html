@@ -820,11 +820,10 @@ endblock %} {% block content %}
               id="send-to-features-btn"
               type="button"
               class="btn btn-outline-secondary"
-              data-export-url="{{ url_for('agent.export_requirements', project_id=project.id) }}"
-              data-features-url="{{ reefuctions_url }}"
+              data-features-url="{{ url_for('features.dashboard', project_id=project.id) }}"
             >
               <i class="bi bi-arrow-right-circle me-2"></i>
-              {{ _('In RE_Fuctions öffnen und Funktionen generieren') }}
+              {{ _('In Funktionen öffnen und Funktionen generieren') }}
             </button>
           </div>
         </div>
@@ -1355,22 +1354,18 @@ endblock %} {% block content %}
 
   document.getElementById("send-to-features-btn").addEventListener("click", function () {
     const button = this;
-    const exportUrl = button.dataset.exportUrl;
-    const remoteBaseUrl = button.dataset.featuresUrl;
+    const targetUrl = button.dataset.featuresUrl;
 
-    if (!exportUrl || !remoteBaseUrl) {
-      alert("Die Ziel-URL für RE_Fuctions ist nicht konfiguriert.");
+    if (!targetUrl) {
+      alert("Die Ziel-Route für Funktionen ist nicht konfiguriert.");
       return;
     }
 
     try {
-      const openUrl = new URL(remoteBaseUrl);
-      openUrl.searchParams.set("requirements_url", exportUrl);
-      openUrl.searchParams.set("auto_generate", "true");
-      window.open(openUrl.toString(), "_blank");
+      window.open(targetUrl, "_blank");
     } catch (error) {
-      console.error("Fehler beim Öffnen von RE_Fuctions:", error);
-      alert("Fehler beim Öffnen von RE_Fuctions. Bitte prüfen Sie die Konfiguration.");
+      console.error("Fehler beim Öffnen der Funktionsansicht:", error);
+      alert("Fehler beim Öffnen der Funktionsansicht. Bitte prüfen Sie die Konfiguration.");
     }
   });
 </script>
