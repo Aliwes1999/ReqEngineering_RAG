@@ -374,14 +374,21 @@ class Notification(db.Model):
         self.is_read = True
         self.read_at = datetime.utcnow()
 
-class FunctionTree(db.Model):
-    """Speichert die Funktionsstruktur pro Projekt."""
+class FunctionTreeVersion(db.Model):
+    """Speichert die versionierte Funktionsstruktur pro Projekt."""
     id = db.Column(db.Integer, primary_key=True)
     project_id = db.Column(db.Integer, db.ForeignKey('project.id'), nullable=False)
+    version_number = db.Column(db.Integer, nullable=False, default=1)
+    status = db.Column(db.String(20), nullable=False, default="Entwurf")  # Entwurf, Freigabe
     tree_data = db.Column(db.Text, nullable=False, default='{}')  # JSON representation of the function tree
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-    project = db.relationship('Project', backref=db.backref('function_tree_entry', uselist=False))
+    project = db.relationship('Project', backref=db.backref('function_tree_versions', lazy=True))
+
+    __table_args__ = (
+        db.UniqueConstraint('project_id', 'version_number', name='uq_project_version_number'),
+    )
 
     def get_tree_data(self):
         try:
@@ -391,3 +398,7 @@ class FunctionTree(db.Model):
 
     def set_tree_data(self, data):
         self.tree_data = json.dumps(data, ensure_ascii=False)
+
+    def is_locked(self):
+        """Check if the function tree is locked (e.g., if status is 'Freigabe')."""
+        return self.status == 'Freigegeben'
