@@ -149,28 +149,63 @@
               {{ p.requirements|length }}
             </div>
           </div>
-
-          <!-- Actions (Button + Context Menu) - Stop propagation to prevent navigation -->
-          <div
-            class="col-auto p-3 border-start d-flex align-items-center gap-2"
-          >
-            <!-- Direct Delete Button -->
-            <form
-              action="{{ url_for('main.delete_project', project_id=p.id) }}"
-              method="post"
-              class="d-inline"
-              id="delete-project-form-{{ p.id }}"
-            >
-              <button
-                type="button"
-                class="btn btn-light btn-sm rounded-circle action-btn text-danger"
-                onclick="event.stopPropagation(); showConfirmModal('{{ _('Möchten Sie das Projekt %(name)s wirklich löschen? Alle Daten gehen verloren.', name=p.name) | e }}', function () { document.getElementById('delete-project-form-{{ p.id }}').submit(); })"
-                title="{{ _('Projekt löschen') }}"
+              <!-- Actions (Button + Context Menu) - Stop propagation to prevent navigation -->
+              <div
+                class="col-auto p-3 border-start d-flex align-items-center gap-2"
               >
-                <i class="bi bi-trash"></i>
-              </button>
-            </form>
+                <!-- Share Button -->
+                <button
+                  type="button"
+                  class="btn btn-light btn-sm rounded-circle action-btn text-primary"
+                  onclick="event.stopPropagation();"
+                  data-bs-toggle="modal"
+                  data-bs-target="#shareProjectModal-{{ p.id }}"
+                  title="{{ _('Teilen') }}"
+                >
+                  <i class="bi bi-share"></i>
+                </button>
+
+                <!-- Direct Delete Button -->
+                <form
+                  action="{{ url_for('main.delete_project', project_id=p.id) }}"
+                  method="post"
+                  class="d-inline"
+                  id="delete-project-form-{{ p.id }}"
+                >
+                  <button
+                    type="button"
+                    class="btn btn-light btn-sm rounded-circle action-btn text-danger"
+                    onclick="event.stopPropagation(); showConfirmModal('{{ _('Möchten Sie das Projekt %(name)s wirklich löschen? Alle Daten gehen verloren.', name=p.name) | e }}', function () { document.getElementById('delete-project-form-{{ p.id }}').submit(); })"
+                    title="{{ _('Projekt löschen') }}"
+                  >
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </form>
           </div>
+        </div>
+      </div>
+    </div>
+
+        <!-- Share Modal für dieses Projekt -->
+    <div class="modal fade" id="shareProjectModal-{{ p.id }}" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">{{ _('Projekt teilen') }}: {{ p.name }}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <form method="POST" action="{{ url_for('main.share_project', project_id=p.id) }}">
+            <div class="modal-body">
+              <div class="mb-3">
+                <label for="shareEmail-{{ p.id }}" class="form-label">{{ _('E-Mail-Adresse') }}</label>
+                <input type="email" class="form-control" id="shareEmail-{{ p.id }}" name="email" required />
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Abbrechen') }}</button>
+              <button type="submit" class="btn btn-primary">{{ _('Teilen') }}</button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
