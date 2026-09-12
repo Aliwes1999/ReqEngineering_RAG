@@ -402,3 +402,7 @@ class FunctionTreeVersion(db.Model):
     def is_locked(self):
         """Check if the function tree is locked (e.g., if status is 'Freigabe')."""
         return self.status == 'Freigegeben'
+
+    def is_view_only(self):
+        """Gibt True zurück wenn diese Version nur zur Ansicht geladen wurde."""
+        return self.status == 'Freigegeben'
