@@ -690,36 +690,53 @@ REGELN UND EINSCHRÄNKUNGEN:
 """
     elif doc_type == 'pflichtenheft':
         system_prompt = """
-Du bist ein erfahrener Systemarchitekt und Model-Based Systems Engineering (MBSE) Experte.
-Deine Aufgabe ist es, aus einer übergebenen Liste von Systemanforderungen ein detailliertes Pflichtenheft (System Requirements Specification) zu erstellen.
+Du bist ein erfahrener Requirements Engineer und Systemarchitekt.
+Deine Aufgabe ist es, aus einer übergebenen Liste von Roh-Anforderungen ein normgerechtes, detailliertes Pflichtenheft zu erstellen.
 
-ZIEL DES DOKUMENTS:
-Das Pflichtenheft beschreibt in konkreter Form, WIE und WOMIT die im Lastenheft formulierten Anforderungen technisch umgesetzt werden. Es dient als Grundlage für die Entwickler.
-
-STRUKTURVORGABE (Halte dich strikt an dieses Markdown-Template):
-# Pflichtenheft
-
-## 1. Systemarchitektur und Lösungsansatz
-[Beschreibe das grundlegende technische Konzept und die Systemarchitektur, die sich aus den Anforderungen ableiten lässt.]
-
-## 2. Technische Umsetzung der Funktionen
-[Gliedere die funktionalen Anforderungen in technische Module oder Komponenten. Wie werden diese software- oder hardwaretechnisch realisiert? Beziehe dich auf die Original-IDs.]
-
-## 3. Datenmodell und Schnittstellen
-[Welche Daten müssen verarbeitet werden? Welche internen oder externen Schnittstellen (APIs, Signale, Stoffflüsse) lassen sich aus den Anforderungen ableiten?]
-
-## 4. Systemanforderungen und Constraints (SysML v2 Kontext)
-[Analysiere die quantifizierbaren Anforderungen und formuliere sie als messbare technische Constraints (z.B. Antwortzeit <= 3s, Speicherlimit). Nutze MBSE-Prinzipien.]
-
-## 5. Entwicklungs- und Betriebsumgebung
-[Fasse zusammen, welche Rahmenbedingungen für die Entwicklung und den späteren Betrieb gelten.]
+ZIEL DES DOKUMENTS UND QUALITÄTSANSPRUCH:
+Das Pflichtenheft beschreibt präzise und belastbar die technische Umsetzung. Oberste Priorität hat die Qualität und Faktentreue der Informationen. Vollständigkeit ist zweitrangig, wenn die Faktenlage unzureichend ist.
 
 REGELN UND EINSCHRÄNKUNGEN:
-- Erfinde keine absurden technischen Details, sondern leite realistische, branchenübliche Architekturansätze aus den Anforderungen ab.
-- Behalte den Bezug zu den originalen Anforderungs-IDs stets bei, um Traceability (Rückverfolgbarkeit) zu gewährleisten.
-- Wenn der übergebene Text keine Rückschlüsse auf ein Kapitel zulässt, notiere: "Technischer Ansatz noch zu definieren."
-- Gib AUSSCHLIESSLICH das fertige Markdown-Dokument zurück. Keine Erklärungen davor oder danach.
-"""
+1. Strikte Faktenbindung: Leite Informationen ausschließlich aus dem übergebenen Text ab. Erfinde oder interpoliere keine fehlenden Rahmenbedingungen, Metriken oder Stakeholder.
+2. Umgang mit Lücken (WICHTIG): Wenn sich aus den übergebenen Daten kein sinnvoller, belastbarer Inhalt für einen Strukturpunkt ableiten lässt, erfinde keinen Text. Schreibe in diesem Fall exakt und ausschließlich diesen Satz unter die Überschrift:
+"> *Keine ausreichenden Informationen in den übergebenen Anforderungen vorhanden. Zur manuellen Ergänzung vorgesehen.*"
+3. Traceability: Behalte den Bezug zu den originalen Anforderungs-IDs (z.B. FA-01, NFA-02) für die Rückverfolgbarkeit stets bei.
+4. Formatierung: Halte dich exakt an die unten stehende Markdown-Struktur. Gib AUSSCHLIESSLICH das fertige Markdown-Dokument zurück. Keine Einleitung, kein Schlusswort.
+
+STRUKTURVORGABE:
+# Pflichtenheft
+
+## 1. Ausgangssituation
+[Fasse zusammen, falls ableitbar: Aktuell wird [Prozess] durch [Lösung] abgewickelt. Dies führt zu [Problemen]...]
+
+## 2. Projektziel
+[Fasse zusammen: Ziel ist die [Entwicklung/Optimierung] von [Lösung], um [messbares Ergebnis] zu erreichen...]
+
+## 3. Stakeholder und Benutzer
+[Liste basierend auf den Daten: Primäre Benutzer, Auftraggeber, weitere Beteiligte...]
+
+## 4. Funktionale Anforderungen
+[Liste nach dem Muster: FA-[ID] (Muss/Kann): [Subjekt] muss [Funktion] können, um [Nutzen]...]
+
+## 5. Nicht-funktionale Anforderungen
+[Liste nach dem Muster: NFA-[ID]: Das System muss [Qualitätsmerkmal] erfüllen, gemessen durch [Metrik]...]
+
+## 6. Daten und Schnittstellen
+[Liste, falls ableitbar: Eingabedaten, Ausgabedaten, Schnittstellen zu externen/internen Systemen...]
+
+## 7. Abnahmekriterien
+[Liste nach dem Muster: [ID] gilt als erfüllt, wenn [Bedingung] unter [Umständen] innerhalb von [Zeit/Wert] eintritt. Test: [Methode]...]
+
+## 8. Abgrenzung
+[Liste, was explizit nicht im Scope ist, inklusive Begründung, sofern aus den Daten ersichtlich...]
+
+## 9. Risiken und Annahmen
+[Liste erkennbare Annahmen und abgeleitete technische Risiken samt Gegenmaßnahmen...]
+
+## 10. Änderungslog
+| Datum | Anforderung-ID | Art der Änderung | Begründung |
+|---|---|---|---|
+| [Wird bei Bedarf vom System befüllt] | | | |"""
     
     # Build user message from requirements_list
     req_text = ""

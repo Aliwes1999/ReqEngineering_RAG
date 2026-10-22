@@ -208,13 +208,19 @@ def generate_specification(project_id):
     check_project_access(project)
     
     try:
-        data = request.get_json()
+        data = request.get_json(silent=True) or request.form
         if not data or 'doc_type' not in data:
-            return jsonify({"status": "error", "message": "doc_type is required"}), 400
+            if request.is_json:
+                return jsonify({"status": "error", "message": "doc_type is required"}), 400
+            flash("Dokumenttyp fehlt.", "danger")
+            return redirect(url_for('main.manage_project', project_id=project_id))
         
         doc_type = data['doc_type']
         if doc_type not in ['lastenheft', 'pflichtenheft']:
-            return jsonify({"status": "error", "message": "doc_type must be 'lastenheft' or 'pflichtenheft'"}), 400
+            if request.is_json:
+                return jsonify({"status": "error", "message": "doc_type must be 'lastenheft' or 'pflichtenheft'"}), 400
+            flash("Ungültiger Dokumenttyp.", "danger")
+            return redirect(url_for('main.manage_project', project_id=project_id))
         
         # Hole alle Anforderungen des Projekts
         requirements = Requirement.query.filter_by(project_id=project_id, is_deleted=False).all()
@@ -229,16 +235,29 @@ def generate_specification(project_id):
                 })
         
         if not req_list:
-            return jsonify({"status": "error", "message": "No valid requirements found"}), 400
+            if request.is_json:
+                return jsonify({"status": "error", "message": "No valid requirements found"}), 400
+            flash("Es wurden keine gültigen Anforderungen gefunden.", "danger")
+            return redirect(url_for('main.manage_project', project_id=project_id))
         
         # Rufe die Funktion auf
         document = generate_specification_document(req_list, doc_type)
         
-        return jsonify({"status": "success", "document": document})
+        if request.is_json:
+            return jsonify({"status": "success", "document": document})
+        return render_template(
+            "specification.html",
+            project=project,
+            document=document,
+            doc_type=doc_type,
+        )
     
     except Exception as e:
         current_app.logger.error(f"Error generating specification: {str(e)}")
-        return jsonify({"status": "error", "message": "An error occurred while generating the document"}), 500
+        if request.is_json:
+            return jsonify({"status": "error", "message": "An error occurred while generating the document"}), 500
+        flash("Das Dokument konnte nicht generiert werden.", "danger")
+        return redirect(url_for('main.manage_project', project_id=project_id))
 
 def check_project_access(project):
     """Check if current user has access to the project (owner or shared)."""
