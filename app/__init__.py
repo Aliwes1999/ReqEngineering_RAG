@@ -35,17 +35,16 @@ def create_app():
     login_manager.init_app(app)
     login_manager.login_view = 'auth.login'
 
-    from . import models
-    # db.create_all() nicht mehr automatisch, da Migrationen verwendet werden
-
-    from .routes import bp
+    from .routes import bp as main_bp
     from .auth import auth_bp
     from .agent import agent_bp
     from .features.features import features_bp
-    app.register_blueprint(bp)
+    from .features.solution_structure.solution_structure import solution_structure_bp
+    app.register_blueprint(main_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(agent_bp)
     app.register_blueprint(features_bp)
+    app.register_blueprint(solution_structure_bp)
 
     from .migration import migration_bp
     app.register_blueprint(migration_bp)

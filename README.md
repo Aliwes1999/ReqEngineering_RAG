@@ -112,6 +112,7 @@ pip install -r requirements.txt
 # .env Datei erstellen
 OPENAI_API_KEY=your_openai_api_key_here
 OPENAI_MODEL=gpt-4o-mini  # Optional
+OPENAI_BASE_URL=https://api.openai.com/v1  # Optional, Standard ist OpenAI-API
 ```
 
 5. Anwendung starten:

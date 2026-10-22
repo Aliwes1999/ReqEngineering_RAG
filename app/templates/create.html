@@ -1,6 +1,6 @@
-{% extends "base.html" %} {% block title %}{{ _('Projekt verwalten') }}{% endblock %} {% block
-
-content %} 
+{% extends "base.html" %}
+{% block title %}{% if project %}{{ _('Requirements') }}{% else %}{{ _('Neues Projekt erstellen') }}{% endif %}{% endblock %}
+{% block content %}
 <style>
   main.container {
     max-width: 1400px;
@@ -43,30 +43,6 @@ content %}
         </a>
         <div class="d-flex align-items-center gap-2 flex-wrap">
           <h2 class="fw-bold m-0">{{ _('Projektname') }}: {{ project.name }}</h2>
-          <button
-            class="btn btn-outline-primary btn-uniform btn-modern d-flex align-items-center share-btn ms-2"
-            type="button"
-            data-bs-toggle="modal"
-            data-bs-target="#shareProjectModal"
-            title="{{ _('Teilen') }}"
-          >
-            <i class="bi bi-share me-2"></i> <span class="share-btn-text">{{ _('Teilen') }}</span>
-          </button>
-          <style>
-          .share-btn:hover, .share-btn:focus {
-            background: #0d6efd !important;
-            color: #fff !important;
-            border-color: #0d6efd !important;
-          }
-          .share-btn:hover .share-btn-text,
-          .share-btn:focus .share-btn-text {
-            color: #fff !important;
-          }
-          .share-btn:hover i,
-          .share-btn:focus i {
-            color: #fff !important;
-          }
-          </style>
         </div>
         {% if project.shared_with %}
         <div class="mt-2">
@@ -98,7 +74,6 @@ content %}
         <!-- Data Menu Removed - moved to toolbar -->
     </div>
 </div>
-
 <!-- Conflict Modal (Preserved) -->
 <div class="modal fade" id="conflictModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg">
@@ -781,47 +756,7 @@ document.addEventListener('DOMContentLoaded', function() {
   </div>
 </div>
 
-<div class="modal fade" id="shareProjectModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">{{ _('Projekt teilen') }}</h5>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-        ></button>
-      </div>
-      <form
-        method="POST"
-        action="{{ url_for('main.share_project', project_id=project.id) }}"
-      >
-        <div class="modal-body">
-          <div class="mb-3">
-            <label for="shareEmail" class="form-label">{{ _('E-Mail-Adresse') }}</label>
-            <input
-              type="email"
-              class="form-control"
-              id="shareEmail"
-              name="email"
-              required
-            />
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button
-            type="button"
-            class="btn btn-secondary"
-            data-bs-dismiss="modal"
-          >
-            {{ _('Abbrechen') }}
-          </button>
-          <button type="submit" class="btn btn-primary">{{ _('Teilen') }}</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
+
 
 <div class="modal fade" id="importExcelModal" tabindex="-1">
   <div class="modal-dialog">

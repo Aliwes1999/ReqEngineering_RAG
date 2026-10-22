@@ -3,6 +3,7 @@ import os
 # OpenAI Configuration
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 OPENAI_MODEL = os.getenv('OPENAI_MODEL', 'gpt-4o-mini')
+OPENAI_BASE_URL = os.getenv('OPENAI_BASE_URL')
 SYSTEM_PROMPT_PATH = os.getenv('SYSTEM_PROMPT_PATH')
 SYSTEM_PROMPT = os.getenv('SYSTEM_PROMPT')
 
