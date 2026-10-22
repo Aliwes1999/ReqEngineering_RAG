@@ -52,6 +52,7 @@ class Project(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     # JSON field to store dynamic column configuration
     custom_columns = db.Column(db.Text, default='[]')  # Stores list of column names as JSON
+    evaluation_comparisons = db.Column(db.Text, default='{}')
     
     requirements = db.relationship("Requirement", backref="project", lazy=True, cascade="all, delete-orphan")
     
@@ -74,6 +75,14 @@ class Project(db.Model):
         """Set custom column names."""
         import json
         self.custom_columns = json.dumps(columns)
+
+    def get_evaluation_comparisons(self):
+        """Get the last saved pairwise requirement comparisons."""
+        import json
+        try:
+            return json.loads(self.evaluation_comparisons) if self.evaluation_comparisons else {}
+        except (TypeError, ValueError):
+            return {}
     
     def is_accessible_by(self, user):
         """Check if user can access this project (owner or shared)."""
@@ -89,6 +98,7 @@ class Requirement(db.Model):
     is_deleted = db.Column(db.Boolean, default=False)
     # Neue Spalte: Funktional
     funktional = db.Column(db.Boolean, default=False)
+    gewichtung_prozent = db.Column(db.Float, nullable=True)
 
     versions = db.relationship(
         "RequirementVersion",
