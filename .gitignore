@@ -10,3 +10,11 @@ env/
 .vscode/
 .idea/
 instance/
+qdrant_local/
+logs/
+processed_files.json
+ingest_log.jsonl
+cloudflared.exe
+data/
+logs/
+instance/
